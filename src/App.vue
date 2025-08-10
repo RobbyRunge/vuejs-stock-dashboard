@@ -7,11 +7,16 @@
 
 <script>
 import Card from './components/Card.vue';
+import { stockService } from '@/services/stockService';
 
 export default {
   name: 'App',
   components: {
     Card
+  },
+  async created() {
+    this.data = await stockService.getAllData('$AAPL');
+    console.log('Loaded data', this.data);
   }
 }
 </script>

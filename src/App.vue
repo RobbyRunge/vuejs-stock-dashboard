@@ -25,8 +25,15 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'Rubik';
+  src: url('@/assets/fonts/Rubik-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+}
+
 body {
   margin: 0;
+  font-family: Rubik;
 }
 
 #app {

@@ -8,7 +8,7 @@
 
 <script>
 import Card from './components/Card.vue';
-import { stockService } from '@/services/stockService';
+// import { stockService } from '@/services/stockService'; // wegen maximalen Anfragen im Monat
 import Headline from './components/Headline.vue';
 
 export default {
@@ -17,10 +17,10 @@ export default {
     Card,
     Headline
   },
-  async created() {
-    this.data = await stockService.getRevenue('$AAPL');
-    console.log('Loaded data', this.data);
-  }
+  // async created() {
+  //   this.data = await stockService.getRevenue('$AAPL');
+  //   console.log('Loaded data', this.data);
+  // }
 }
 </script>
 
@@ -34,6 +34,7 @@ export default {
 body {
   margin: 0;
   font-family: Rubik;
+  color: #F9F9F9;
 }
 
 #app {

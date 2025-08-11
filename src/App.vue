@@ -1,4 +1,5 @@
 <template>
+  <Headline></Headline>
   <Card>
     <h1>Willkommen zum Stock Dashboard</h1>
     <p>Hier können Sie Ihre Aktien verfolgen.</p>
@@ -8,11 +9,13 @@
 <script>
 import Card from './components/Card.vue';
 import { stockService } from '@/services/stockService';
+import Headline from './components/Headline.vue';
 
 export default {
   name: 'App',
   components: {
-    Card
+    Card,
+    Headline
   },
   async created() {
     this.data = await stockService.getRevenue('$AAPL');

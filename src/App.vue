@@ -1,8 +1,7 @@
 <template>
   <Headline></Headline>
   <Card>
-    <h1>Willkommen zum Stock Dashboard</h1>
-    <p>Hier können Sie Ihre Aktien verfolgen.</p>
+    <StockCard :stocks="stocks" />
   </Card>
 </template>
 
@@ -10,17 +9,32 @@
 import Card from './components/Card.vue';
 // import { stockService } from '@/services/stockService'; // wegen maximalen Anfragen im Monat
 import Headline from './components/Headline.vue';
+import StockCard from './components/StockCard.vue';
 
 export default {
   name: 'App',
   components: {
     Card,
-    Headline
+    Headline,
+    StockCard,
   },
   // async created() {
   //   this.data = await stockService.getRevenue('$AAPL');
   //   console.log('Loaded data', this.data);
   // }
+  data() {
+    return {
+      stocks: [
+        { symbol: 'AAPL', name: 'Apple Inc.' },
+        { symbol: 'GOOGL', name: 'Alphabet Inc.' },
+        { symbol: 'MSFT', name: 'Microsoft Corp.' },
+        { symbol: 'AMZN', name: 'Amazon.com Inc.' },
+        { symbol: 'TSLA', name: 'Tesla Inc.' },
+        { symbol: 'NVDA', name: 'NVIDIA Corp.' },
+        { symbol: 'META', name: 'Meta Platforms Inc.' }
+      ]
+    };
+  }
 }
 </script>
 

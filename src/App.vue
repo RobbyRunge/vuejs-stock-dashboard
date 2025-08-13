@@ -25,13 +25,13 @@ export default {
   data() {
     return {
       stocks: [
-        { symbol: 'AAPL', name: 'Apple Inc.' },
-        { symbol: 'GOOGL', name: 'Alphabet Inc.' },
-        { symbol: 'MSFT', name: 'Microsoft Corp.' },
-        { symbol: 'AMZN', name: 'Amazon.com Inc.' },
-        { symbol: 'TSLA', name: 'Tesla Inc.' },
-        { symbol: 'NVDA', name: 'NVIDIA Corp.' },
-        { symbol: 'META', name: 'Meta Platforms Inc.' }
+        { symbol: 'appl', name: 'Apple' },
+        { symbol: 'goog', name: 'Google' },
+        { symbol: 'msft', name: 'Microsoft' },
+        { symbol: 'amzn', name: 'Amazon' },
+        { symbol: 'tsla', name: 'Tesla' },
+        { symbol: 'nvda', name: 'NVIDIA' },
+        { symbol: 'meta', name: 'Meta' }
       ]
     };
   }

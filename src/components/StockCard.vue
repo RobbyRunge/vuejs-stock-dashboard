@@ -2,7 +2,7 @@
   <div class="card-list">
     <div v-for="stock in stocks" :key="stock.symbol" class="card">
       <div class="headline-card">
-        <p>{{ stock.symbol }}</p>
+        <img :src="getImagePath(stock.symbol)" :alt="stock.symbol" class="stock-image" />
         <h3>{{ stock.name }}</h3>
       </div>
       <div>
@@ -28,6 +28,20 @@ export default {
       type: Array,
       required: true
     }
+  },
+  methods: {
+    getImagePath(symbol) {
+      const imageMap = {
+        appl: require('@/assets/img/appl.png'),
+        goog: require('@/assets/img/goog.png'),
+        msft: require('@/assets/img/msft.png'),
+        amzn: require('@/assets/img/amzn.png'),
+        tsla: require('@/assets/img/tsla.png'),
+        nvda: require('@/assets/img/nvda.png'),
+        meta: require('@/assets/img/meta.png')
+      };
+      return imageMap[symbol];
+    }
   }
 }
 </script>
@@ -49,6 +63,11 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.stock-image {
+  width: 24px;
+  height: 24px;
 }
 
 h3 {

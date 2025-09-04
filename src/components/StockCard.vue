@@ -6,12 +6,12 @@
         <h3>{{ stock.name }}</h3>
       </div>
       <div>
-        <p class="revenue">Revenue Q1 2024</p>
+        <p class="revenue">{{ stock.period || 'Revenue Q3 2025' }}</p>
         <div class="numbers-layout">
-          <p class="total-revenue">66.61</p>
-          <div class="previous-year">
-            <p>-2,1 &darr;</p>
-            <p>-3,1 %</p>
+          <p class="total-revenue">{{ stock.revenue || '0.00' }}</p>
+          <div class="previous-year" :class="{ positive: stock.isPositive }">
+            <p>{{ stock.change || '0.00' }} {{ stock.isPositive ? '↑' : '↓' }}</p>
+            <p>{{ stock.changePercent || '0.0' }} %</p>
           </div>
         </div>
         <p class="in-bill-usd">In Bill USD</p>
@@ -97,6 +97,21 @@ h3 {
   flex-direction: column;
   gap: 8px;
   color: #C41C1C;
+}
+
+.previous-year.positive {
+  color: #28a745;
+}
+
+.previous-year p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.in-bill-usd {
+  font-size: 12px;
+  color: #999;
+  margin: 8px 0 0 0;
 }
 
 .previous-year p {

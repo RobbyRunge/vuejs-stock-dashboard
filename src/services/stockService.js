@@ -17,7 +17,11 @@ const quarterOrder = [
   '1 Aug 24',
   '31 Oct 24',
   '30 Jan 25',
+  '30. Apr 25',
   '1 May 25',
+  '24 Jul 25',
+  '27 Aug 25',
+  '30 Jul 25',
   '31 Jul 25',
 ];
 
@@ -42,6 +46,62 @@ class StockService {
     return await this.fetchData(sheetName);
   }
 
+  // Findet das neueste verfügbare Quartal für eine spezifische Aktie
+  findLatestQuarter(revenueRow) {
+    // Durchsuche quarterOrder rückwärts (vom neuesten zum ältesten)
+    for (let i = quarterOrder.length - 1; i >= 0; i--) {
+      const quarter = quarterOrder[i];
+      if (revenueRow[quarter] && revenueRow[quarter] !== '0' && revenueRow[quarter] !== '') {
+        return quarter;
+      }
+    }
+    return quarterOrder[quarterOrder.length - 1]; // Fallback auf das neueste definierte Quartal
+  }
+
+  // Findet das vorherige Quartal basierend auf dem aktuellen
+  findPreviousQuarter(currentQuarter) {
+    const currentIndex = quarterOrder.indexOf(currentQuarter);
+    if (currentIndex > 0) {
+      // Suche rückwärts nach einem Quartal mit Daten
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        return quarterOrder[i];
+      }
+    }
+    return quarterOrder[0]; // Fallback auf das erste Quartal
+  }
+
+  // Abschneiden (nicht runden) auf gewünschte Nachkommastellen
+  truncateNumber(value, decimals = 2) {
+    if (!isFinite(value)) return 0;
+    const factor = Math.pow(10, decimals);
+    return Math.trunc(value * factor) / factor;
+  }
+
+  // Robustes Parsen von Zahlen mit Punkt- oder Komma-Notation
+  parseLocaleNumber(value) {
+    if (typeof value === 'number') return value;
+    if (!value) return 0;
+    const str = String(value).trim();
+    const hasDot = str.indexOf('.') !== -1;
+    const hasComma = str.indexOf(',') !== -1;
+    let normalized = str;
+    if (hasComma && !hasDot) {
+      // z.B. "66,613" -> "66.613"
+      normalized = str.replace(',', '.');
+    } else if (hasDot && !hasComma) {
+      // "66.613" bleibt
+      normalized = str;
+    } else if (hasDot && hasComma) {
+      // "1.234,56" -> "1234.56", "1,234.56" -> "1234.56"
+      if (str.lastIndexOf('.') < str.lastIndexOf(',')) {
+        normalized = str.replace(/\./g, '').replace(',', '.');
+      } else {
+        normalized = str.replace(/,/g, '');
+      }
+    }
+    return parseFloat(normalized) || 0;
+  }
+
   async getRevenue(sheetName) {
     const data = await this.fetchData(sheetName);
     if (!data || data.length < 6) return [];
@@ -54,26 +114,28 @@ class StockService {
     }));
   }
 
-  async getLatestQuarterData(sheetName) {
+  async getLatestQuarterData(sheetName, revenueRowIndex = 5) {
     const data = await this.fetchData(sheetName);
-    if (!data || data.length < 6) return null;
+    if (!data || data.length <= revenueRowIndex) return null;
     
-    const revenueRow = data[5];
-    const latestQuarter = '31 Jul 25';
-    const previousQuarter = '1 May 25';
+    const revenueRow = data[revenueRowIndex];
+    const latestQuarter = this.findLatestQuarter(revenueRow);
+    const previousQuarter = this.findPreviousQuarter(latestQuarter);
     
-    const currentRevenue = parseFloat(revenueRow[latestQuarter]) || 0;
-    const previousRevenue = parseFloat(revenueRow[previousQuarter]) || 0;
+    const currentRevenue = this.parseLocaleNumber(revenueRow[latestQuarter]) || 0;
+    const previousRevenue = this.parseLocaleNumber(revenueRow[previousQuarter]) || 0;
     
     const change = currentRevenue - previousRevenue;
     const changePercent = previousRevenue > 0 ? ((change / previousRevenue) * 100) : 0;
     
     return {
-      revenue: currentRevenue.toFixed(2),
-      change: change.toFixed(2),
-      changePercent: changePercent.toFixed(1),
+      // Rohe numerische Werte (abgeschnitten, nicht gerundet)
+      revenue: this.truncateNumber(currentRevenue, 2),
+      change: this.truncateNumber(change, 2),
+      changePercent: this.truncateNumber(changePercent, 2),
       isPositive: change >= 0,
-      quarter: latestQuarter
+      quarter: latestQuarter,
+      previousQuarter: previousQuarter
     };
   }
 }
